@@ -15,4 +15,24 @@
 #ifndef DROP_TARGET_H_
 #define DROP_TARGET_H_
 
+// wxWidgets headers
+#include <wx/dnd.h>
+
+class MainFrame;
+
+/// Class derived from wxDropTarget in order to allow drag-and-drop operations.
+class DropTarget : public wxDropTarget
+{
+public:
+	explicit DropTarget(MainFrame& mainFrame);
+	~DropTarget() = default;
+
+	wxDragResult OnData(wxCoord x, wxCoord y, wxDragResult def) override;
+
+private:
+	MainFrame& mainFrame;
+
+	bool OnDropFiles(const wxArrayString &fileNames);
+};
+
 #endif// DROP_TARGET_H_

@@ -15,9 +15,25 @@
 // Local headers
 #include "mainFrame.h"
 #include "hexDiagnosticsApp.h"
+#include "notebookPage.h"
+#include "dropTarget.h"
+
+// *nix Icons
+#ifdef __WXGTK__
+#include "../res/icons/hex16.xpm"
+#include "../res/icons/hex24.xpm"
+#include "../res/icons/hex32.xpm"
+#include "../res/icons/hex48.xpm"
+#include "../res/icons/hex64.xpm"
+#include "../res/icons/hex96.xpm"
+#include "../res/icons/hex128.xpm"
+#endif
 
 // wxWidgets headers
 #include <wx/notebook.h>
+
+// Standard C++ headers
+#include <memory>
 
 //==========================================================================
 // Class:			MainFrame
@@ -101,9 +117,16 @@ wxWindow* MainFrame::CreateNotebook(wxWindow *parent)
 
 //==========================================================================
 // Class:			MainFrame
-// Function:		CreateNotebookPage
+// Function:		AddNewFile
 //
-// Description:		Creates a new notebook page.
+// Description:		Creates a new notebook page.  Each notebook page will
+//					have three key areas:
+//					1.  Hexidecimal display of each byte in the file
+//					2.  Character representation of each byte
+//					3.  Interpreting selected bytes as other data types
+//					As portions of either the hex bytes or character window
+//					are highlighted, those bytes are cast to other data types
+//					and displayed in the third window.
 //
 // Input Arguments:
 //		parent	= wxWindow*
@@ -112,34 +135,16 @@ wxWindow* MainFrame::CreateNotebook(wxWindow *parent)
 //		None
 //
 // Return Value:
-//		wxBoxSizer*
+//		None
 //
 //==========================================================================
-wxBoxSizer* MainFrame::CreateNotebookPage(wxWindow *parent)
+void MainFrame::AddNewFile(const wxString& fileName)
 {
-	return nullptr;
-}
+	std::unique_ptr<NotebookPage> page(std::make_unique<NotebookPage>(notebook));
+	if (!page->Initialize(fileName))
+		return;
 
-//==========================================================================
-// Class:			MainFrame
-// Function:		CreateInterpretationControls
-//
-// Description:		Creates a sizer containing the interpretation controls
-//					for a notebook page.
-//
-// Input Arguments:
-//		parent	= wxWindow*
-//
-// Output Arguments:
-//		None
-//
-// Return Value:
-//		wxBoxSizer*
-//
-//==========================================================================
-wxBoxSizer* MainFrame::CreateInterpretationControls(wxWindow *parent)
-{
-	return nullptr;
+	notebook->AddPage(page.release(), ExtractFileNameFromPath(fileName), true);
 }
 
 //==========================================================================
@@ -191,41 +196,48 @@ void MainFrame::SetProperties()
 {
 	SetTitle(HexDiagnosticsApp::appTitle);
 	SetName(HexDiagnosticsApp::appName);
+	SetDropTarget(new DropTarget(*this));
 	Center();
 
-/*#ifdef __WXMSW__
+#ifdef __WXMSW__
 	SetIcon(wxIcon(_T("ICON_ID_MAIN"), wxBITMAP_TYPE_ICO_RESOURCE));
 #elif __WXGTK__
-	SetIcon(wxIcon(plots16_xpm));
-	SetIcon(wxIcon(plots24_xpm));
-	SetIcon(wxIcon(plots32_xpm));
-	SetIcon(wxIcon(plots48_xpm));
-	SetIcon(wxIcon(plots64_xpm));
-	SetIcon(wxIcon(plots128_xpm));
-#endif*/
+	SetIcon(wxIcon(hex16_xpm));
+	SetIcon(wxIcon(hex24_xpm));
+	SetIcon(wxIcon(hex32_xpm));
+	SetIcon(wxIcon(hex48_xpm));
+	SetIcon(wxIcon(hex64_xpm));
+	SetIcon(wxIcon(hex96_xpm));
+	SetIcon(wxIcon(hex128_xpm));
+#endif
 }
 
 //==========================================================================
 // Class:			MainFrame
-// Function:		Event Table
+// Function:		ExtractFileNameFromPath
 //
-// Description:		Links GUI events with event handler functions.
+// Description:		Pulls the file name out of the path string.
 //
 // Input Arguments:
-//		None
+//		path	= const wxString&
 //
 // Output Arguments:
 //		None
 //
 // Return Value:
-//		None
+//		wxString
 //
 //==========================================================================
-/*BEGIN_EVENT_TABLE(MainFrame, wxFrame)
-	EVT_BUTTON(idButtonOpen,			MainFrame::ButtonOpenClickedEvent)
-	EVT_BUTTON(idButtonAutoScale,		MainFrame::ButtonAutoScaleClickedEvent)
-	EVT_BUTTON(idButtonRemoveCurve,		MainFrame::ButtonRemoveCurveClickedEvent)
-	EVT_BUTTON(idButtonReloadData,		MainFrame::ButtonReloadDataClickedEvent)
-	EVT_MENU(idCopyEvent,				MainFrame::CopyEvent)
-	EVT_MENU(idPasteEvent,				MainFrame::PasteEvent)
-END_EVENT_TABLE();*/
+wxString MainFrame::ExtractFileNameFromPath(const wxString& path)
+{
+#ifdef __WXMSW__
+	const wxChar slash('\\');
+#else
+	const wxChar slash('/');
+#endif
+
+	if (path.find(slash) == wxNOT_FOUND)
+		return path;
+
+	return path.Mid(path.find_last_of(slash) + 1);
+}

@@ -27,25 +27,19 @@ public:
 	MainFrame();
 	~MainFrame() = default;
 
+	void AddNewFile(const wxString& fileName);
+
 private:
 	// Functions that do some of the frame initialization and control positioning
 	void CreateControls();
 	void SetProperties();
 
 	wxWindow* CreateNotebook(wxWindow *parent);
-	wxBoxSizer* CreateNotebookPage(wxWindow *parent);
-	wxBoxSizer* CreateInterpretationControls(wxWindow *parent);
 	wxWindow* CreateVersionText(wxWindow *parent);
 
 	wxNotebook* notebook = nullptr;
 
-	/*// The event IDs
-	enum MainFrameEventID
-	{
-		idHighlight = wxID_HIGHEST + 100
-	};
-
-	//DECLARE_EVENT_TABLE();*/
+	static wxString ExtractFileNameFromPath(const wxString& path);
 };
 
 #endif// MAIN_FRAME_H_

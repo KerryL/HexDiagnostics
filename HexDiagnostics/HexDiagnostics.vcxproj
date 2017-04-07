@@ -140,12 +140,14 @@
     <ClCompile Include="..\src\hexDiagnostics.cpp" />
     <ClCompile Include="..\src\hexDiagnosticsApp.cpp" />
     <ClCompile Include="..\src\mainFrame.cpp" />
+    <ClCompile Include="..\src\notebookPage.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\dropTarget.h" />
     <ClInclude Include="..\src\hexDiagnostics.h" />
     <ClInclude Include="..\src\hexDiagnosticsApp.h" />
     <ClInclude Include="..\src\mainFrame.h" />
+    <ClInclude Include="..\src\notebookPage.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\res\HexDiagnostics.rc" />
