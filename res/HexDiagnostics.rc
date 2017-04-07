@@ -13,7 +13,7 @@
 // Description:   Resource file.
 
 // Main application icon (MUST be first alphabetically)
-//ICON_ID_MAIN			ICON		"..\\res\\icons\\hex.ico"
+ICON_ID_MAIN			ICON		"..\\res\\icons\\hex.ico"
 
 // wxWidgets definitions
 #define wxUSE_NO_MANIFEST 1
