@@ -18,7 +18,10 @@
 // wxWidgets headers
 #include <wx/wx.h>
 
-class NotebookPage : public wxWindow
+// Standard C++ headers
+#include <array>
+
+class NotebookPage : public wxPanel
 {
 public:
 	NotebookPage(wxWindow* parent);
@@ -27,7 +30,8 @@ public:
 	bool Initialize(const wxString& fileName);
 
 private:
-	void CreateControls(wxWindow* parent);
+	void CreateControls();
+	wxSizer* CreateInterpretedDisplayPanel(wxWindow* parent);
 
 	void OnRightClick(wxMouseEvent& event);
 	void OnMouseMotion(wxMouseEvent& event);
@@ -35,6 +39,23 @@ private:
 	void OnLeftClickEnd(wxMouseEvent& event);
 	void OnMouseEnterWindow(wxMouseEvent& event);
 	void OnMouseLeaveWindow(wxMouseEvent& event);
+
+	wxTextCtrl* hexDisplay;
+	wxTextCtrl* charDisplay;
+
+	enum class InterpretedTextCtrl : int
+	{
+		BigEndianUnsignedInt,
+		LittleEndianUnsignedInt,
+		BigEndianSignedInt,
+		LittleEndianSignedInt,
+		BigEndianFloatingPoint,
+		LittleEndianFloatingPoint,
+
+		TextCtrlCount
+	};
+
+	std::array<wxTextCtrl*, static_cast<size_t>(InterpretedTextCtrl::TextCtrlCount)> textCtrlPointers;
 
 	enum class MouseState
 	{

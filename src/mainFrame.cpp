@@ -110,7 +110,7 @@ void MainFrame::CreateControls()
 //==========================================================================
 wxWindow* MainFrame::CreateNotebook(wxWindow *parent)
 {
-	notebook = new wxNotebook(parent, wxID_ANY, wxDefaultPosition, wxSize(600, 400));
+	notebook = new wxNotebook(parent, wxID_ANY, wxDefaultPosition, wxSize(700, 400));
 
 	return notebook;
 }
